@@ -6,4 +6,5 @@ abstract class CartRepository {
   Future<void> addToCart(Product product);
   Future<List<CartItem>> getCartItems();
   Future<int> getCartItemsCount();
+  
 }

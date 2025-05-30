@@ -191,5 +191,13 @@ Future<bool> isProductFavorite(int productId) async {
   );
   return result.isNotEmpty;
 }
-
+// database_helper.dart
+Future<int> removeCartItem(int productId) async {
+  final db = await database;
+  return await db.delete(
+    'cart_items',
+    where: 'product_id = ?',
+    whereArgs: [productId],
+  );
+}
 }

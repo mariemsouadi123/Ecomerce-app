@@ -42,6 +42,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => AddToCart(sl()));
   sl.registerLazySingleton(() => GetCartItemsCount(sl()));
   sl.registerLazySingleton(() => GetCartItems(sl()));
+  
 
 
   // Repository

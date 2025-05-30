@@ -9,7 +9,23 @@ class CartPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mon Panier'),
+        title: const Text(
+          'Mon Panier',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color.fromARGB(255, 145, 190, 235), Color.fromARGB(255, 83, 140, 224)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
       ),
       body: BlocBuilder<CartBloc, CartState>(
         builder: (context, state) {
@@ -21,66 +37,73 @@ class CartPage extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('Votre panier est vide'),
+                    const Icon(Icons.shopping_cart_outlined, size: 80, color: Colors.grey),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Votre panier est vide',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                    ),
                     const SizedBox(height: 16),
-                    ElevatedButton(
+                    ElevatedButton.icon(
                       onPressed: () {
                         try {
-                          // Navigate to product_card, clearing the stack
-                          Navigator.pushNamedAndRemoveUntil(
-                            context,
-                            '/product_card',
-                            (route) => false,
-                          );
+                          Navigator.popUntil(context, (route) => route.isFirst);
                         } catch (e) {
-                          // Log the error for debugging
-                          print('Navigation error: $e');
-                          // Show user feedback
+                          debugPrint('Navigation error: $e');
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text(
-                                  'Erreur de navigation: Veuillez réessayer'),
+                              content: Text('Erreur de navigation: Veuillez réessayer'),
                               duration: const Duration(seconds: 2),
                             ),
                           );
                         }
                       },
+                      icon: const Icon(Icons.home, color: Colors.white),
+                      label: const Text('Retour à l\'accueil', style: TextStyle(color: Colors.white)),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blue.shade800,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: const Text(
-                        'Retour à l\'accueil',
-                        style: TextStyle(color: Colors.white),
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                       ),
                     ),
                   ],
                 ),
               );
             }
+
             return ListView.builder(
+              padding: const EdgeInsets.all(12),
               itemCount: state.cartItems.length,
               itemBuilder: (context, index) {
                 final item = state.cartItems[index];
-                return ListTile(
-                  leading: Image.network(
-                    item.product.image,
-                    width: 50,
-                    height: 50,
-                    fit: BoxFit.cover,
+                return Card(
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.all(12),
+                    leading: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.network(
+                        item.product.image,
+                        width: 60,
+                        height: 60,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image),
+                      ),
+                    ),
+                    title: Text(
+                      item.product.title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                    subtitle: Text('Quantité: ${item.quantity}'),
+                    trailing: Text(
+                      '\$${(item.product.price * item.quantity).toStringAsFixed(2)}',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
                   ),
-                  title: Text(
-                    item.product.title,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  subtitle: Text('Quantité: ${item.quantity}'),
-                  trailing: Text(
-                      '\$${(item.product.price * item.quantity).toStringAsFixed(2)}'),
                 );
               },
             );
@@ -89,47 +112,37 @@ class CartPage extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(state.message),
+                  const Icon(Icons.error_outline, size: 80, color: Colors.redAccent),
+                  const SizedBox(height: 20),
+                  Text(state.message, textAlign: TextAlign.center),
                   const SizedBox(height: 16),
-                  ElevatedButton(
+                  ElevatedButton.icon(
                     onPressed: () {
                       try {
-                        // Navigate to product_card, clearing the stack
-                        Navigator.pushNamedAndRemoveUntil(
-                          context,
-                          '/product_card',
-                          (route) => false,
-                        );
+                        Navigator.popUntil(context, (route) => route.isFirst);
                       } catch (e) {
-                        // Log the error for debugging
-                        print('Navigation error: $e');
-                        // Show user feedback
+                        debugPrint('Navigation error: $e');
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text(
-                                'Erreur de navigation: Veuillez réessayer'),
+                            content: Text('Erreur de navigation: Veuillez réessayer'),
                             duration: const Duration(seconds: 2),
                           ),
                         );
                       }
                     },
+                    icon: const Icon(Icons.home, color: Colors.white),
+                    label: const Text('Retour à l\'accueil', style: TextStyle(color: Colors.white)),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue.shade800,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    child: const Text(
-                      'Retour à l\'accueil',
-                      style: TextStyle(color: Colors.white),
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     ),
                   ),
                 ],
               ),
             );
           }
+
           return const Center(child: Text('Chargement...'));
         },
       ),
